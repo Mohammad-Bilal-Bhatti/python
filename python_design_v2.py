@@ -7,6 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import threading
 #----------------------LOGGING---------------------------------
 # Importing the logging module
 import logging
@@ -159,22 +160,78 @@ class Ui_MainWindow(object):
     def onSelectDatabaseBtnClick(self):
         print('Select DB btn Clicked')
         logger.info("Select DB Button Clicked")
+        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Select Database File", "", "DB Files (*.xlsx *.xls )") # Ask for file
+        if fileName: # If the user gives a file
+            print(fileName)
+            self.db_file_label.setText(fileName)
+            self.db_file_path = fileName
+
+
     def onSelectUserFileBtnClick(self):
         print('Select user File Btn Clicked')
         logger.info("Selece User Button Clicked")
+        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Select User Input File", "", "DB Files (*.xlsx *.xls )") # Ask for file
+        if fileName: # If the user gives a file
+            print(fileName)
+            self.user_input_file_label.setText(fileName)
+            self.user_file_path = fileName
+
     def onSelectDestinationDirBtnClick(self):
         logger.info("Select Destination Button Clicked.")
+
         print('Select Destinationg Btn Clicked')
-        self.movie.stop()
-        self.execute_btn.setEnabled(True)
+        fileName = QtWidgets.QFileDialog.getExistingDirectory(None) # Ask for file
+        if fileName:
+            print(fileName)
+            self.destination_file_path = fileName
+
+
+        # #-----------------Animation--------------------
+        # self.movie.stop()
+        # self.execute_btn.setEnabled(True)
+        # #-----------------Animation--------------------
+
+
     def onExecuteBtnClick(self):
         logger.info("Execute Button Clicked")
-        self.load_label
-        self.movie = QtGui.QMovie("ajax-loader2.gif")
-        self.load_label.setMovie(self.movie)
-        self.movie.start()
-        self.execute_btn.setDisabled(True)
-        print('Select Destination Btn Clicked')
+
+
+        db_sheet_no = self.db_sheet_spiner.value()
+        user_sheet_no = self.user_file_spiner.value()
+
+        message = ''
+        if len(self.db_file_path) == 0:
+            message = message + 'DB File Path Missing!\n'
+        if len(self.user_file_path) == 0:
+            message = message + 'User File Path Missing!\n'
+        if len(self.destination_file_path) == 0:
+            message = message + 'Destination Path Missing!\n'
+
+        if len(message) > 0:
+            mb = QtWidgets.QMessageBox()
+            mb.setIcon(mb.Information)
+            mb.setWindowTitle("MESSAGE WINDOW")
+            mb.setInformativeText(message)
+            mb.setStandardButtons(mb.Ok)
+            mb.exec_()
+        else:
+            #-----------------Animation--------------------
+            self.movie = QtGui.QMovie("ajax-loader2.gif")
+            self.load_label.setMovie(self.movie)
+            self.movie.start()
+            self.execute_btn.setDisabled(True)
+            #-----------------Animation--------------------
+
+            thread = threading.Thread(target=self.script)
+            thread.start()
+
+
+
+
+
+    def script(self):
+        print("Script Runs")
+        logger.info("Script Running.")
 
 
 if __name__ == "__main__":
