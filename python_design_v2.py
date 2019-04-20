@@ -97,6 +97,14 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuHello.menuAction())
         self.menubar.addAction(self.menuAbout.menuAction())
 
+        
+        self.select_db_file_btn.clicked.connect(self.onSelectDatabaseBtnClick)
+        self.select_user_file_btn.clicked.connect(self.onSelectUserFileBtnClick)
+        self.select_destination_btn.clicked.connect(self.onSelectDestinationDirBtnClick)
+        self.execute_btn.clicked.connect(self.onExecuteBtnClick)
+
+        
+        
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -122,7 +130,28 @@ class Ui_MainWindow(object):
         self.exit.setText(_translate("MainWindow", "Exit"))
         self.about_application.setText(_translate("MainWindow", "About Application"))
         self.about_developer.setText(_translate("MainWindow", "About Developer"))
+        
+        
+        
 
+    def onSelectDatabaseBtnClick(self):
+        print('Select DB btn Clicked')
+    def onSelectUserFileBtnClick(self):
+        print('Select user File Btn Clicked')
+    def onSelectDestinationDirBtnClick(self):
+        print('Select Destinationg Btn Clicked')
+        self.movie.stop()
+        self.execute_btn.setEnabled(True)
+    def onExecuteBtnClick(self):
+        self.load_label
+        self.movie = QtGui.QMovie("ajax-loader2.gif")
+        self.load_label.setMovie(self.movie)
+        self.movie.start()
+        self.execute_btn.setDisabled(True)
+        print('Select Destination Btn Clicked')
+
+
+        
 
 if __name__ == "__main__":
     import sys
