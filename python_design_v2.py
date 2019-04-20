@@ -7,9 +7,36 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+#----------------------LOGGING---------------------------------
+# Importing the logging module
+import logging
+#Defining the format of the string of the log message
+LOG_FORMAT = '%(levelname)s %(asctime)s - %(message)s'
+#Setting the bacic configuration of the logger.
+
+from pathlib import Path
+home = str(Path.home())
+
+f_name = home + '\\data.log'
+print("Logging is saving in: {}".format(f_name))
+logging.basicConfig(filename= f_name,
+                    format=LOG_FORMAT,
+                    level=logging.DEBUG,
+                    filemode='w'
+                    )
+#Getting the logger object of the default name 'Root'
+logger = logging.getLogger()
+#---------------------LOGGING----------------------------------
+
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+
+        self.db_file_path = ''
+        self.user_file_path = ''
+        self.destination_file_path = ''
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(515, 471)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -97,14 +124,11 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuHello.menuAction())
         self.menubar.addAction(self.menuAbout.menuAction())
 
-        
         self.select_db_file_btn.clicked.connect(self.onSelectDatabaseBtnClick)
         self.select_user_file_btn.clicked.connect(self.onSelectUserFileBtnClick)
         self.select_destination_btn.clicked.connect(self.onSelectDestinationDirBtnClick)
         self.execute_btn.clicked.connect(self.onExecuteBtnClick)
 
-        
-        
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -130,19 +154,21 @@ class Ui_MainWindow(object):
         self.exit.setText(_translate("MainWindow", "Exit"))
         self.about_application.setText(_translate("MainWindow", "About Application"))
         self.about_developer.setText(_translate("MainWindow", "About Developer"))
-        
-        
-        
+
 
     def onSelectDatabaseBtnClick(self):
         print('Select DB btn Clicked')
+        logger.info("Select DB Button Clicked")
     def onSelectUserFileBtnClick(self):
         print('Select user File Btn Clicked')
+        logger.info("Selece User Button Clicked")
     def onSelectDestinationDirBtnClick(self):
+        logger.info("Select Destination Button Clicked.")
         print('Select Destinationg Btn Clicked')
         self.movie.stop()
         self.execute_btn.setEnabled(True)
     def onExecuteBtnClick(self):
+        logger.info("Execute Button Clicked")
         self.load_label
         self.movie = QtGui.QMovie("ajax-loader2.gif")
         self.load_label.setMovie(self.movie)
@@ -150,8 +176,6 @@ class Ui_MainWindow(object):
         self.execute_btn.setDisabled(True)
         print('Select Destination Btn Clicked')
 
-
-        
 
 if __name__ == "__main__":
     import sys
