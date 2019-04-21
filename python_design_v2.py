@@ -8,10 +8,18 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-# from threading import Thread
-# from traceback import format_exc
-# from pyexcelerate import Workbook
+from threading import Thread
+from traceback import format_exc
+from pyexcelerate import Workbook
 
+import threading
+import traceback
+
+from numpy import *
+from numpy.core import *
+import numpy.core._dtype_ctypes
+
+import pandas as pd
 from pandas import DataFrame
 from pandas import Series
 from pandas import read_excel
@@ -231,436 +239,436 @@ class Ui_MainWindow(object):
             self.execute_btn.setDisabled(True)
             #-----------------Animation--------------------
 
-            # thread = threading.Thread(target=self.script,
-            #     args=(self.user_file_path,
-            #           user_sheet_no,
-            #           self.db_file_path,
-            #           db_sheet_no,
-            #           self.destination_file_path))
-            # thread.start()
+            thread = threading.Thread(target=self.script,
+                args=(self.user_file_path,
+                      user_sheet_no,
+                      self.db_file_path,
+                      db_sheet_no,
+                      self.destination_file_path))
+            thread.start()
 
 
 
 
-    # def script(self,ufp,usn,dbfp,dbsn,destfp):
-    #
-    #     print("Script Runs")
-    #     logger.info("Script Running.")
-    #
-    #     def df_to_excel(df, path, sheet_name='Sheet 1'):
-    #         path = path +'/output.xlsx'
-    #
-    #         logger.debug("Excel Export Started.")
-    #         data = [df.columns.tolist(), ] + df.values.tolist()
-    #         wb = Workbook()
-    #         wb.new_sheet(sheet_name, data=data)
-    #         wb.save(path)
-    #         logger.info("Save Completes!")
-    #
-    #     def df_to_scv(df, path):
-    #         path = path +'/output.csv'
-    #         logger.debug("CSV Export Started.")
-    #         df.to_csv(path, chunksize=1000,header=False,index=False)
-    #         logger.info("Save Completes!")
-    #
-    #
-    #     try:
-    #
-    #         u_inpt_file_path = ufp
-    #         u_file_sheet_no = usn - 1
-    #
-    #         database_file_path = dbfp
-    #         db_file_sheet_no = dbsn - 1
-    #
-    #         if u_file_sheet_no < 0:
-    #             u_file_sheet_no = 0
-    #         if db_file_sheet_no < 0:
-    #             db_file_sheet_no = 0
-    #
-    #
-    #
-    #         logger.debug("Reading Database File.")
-    #         databaseFrame = pd.read_excel(database_file_path, sheet_name=u_file_sheet_no,header=None)
-    #
-    #         logger.debug("Reading User Input File.")
-    #         userInputFrame = pd.read_excel(u_inpt_file_path, sheet_name=db_file_sheet_no,header=None)
-    #
-    #         #getting columns size...
-    #         logger.debug("Getting Columns sizes.")
-    #         db_col_size = databaseFrame.columns.size
-    #         us_col_size = userInputFrame.columns.size
-    #
-    #
-    #         columns_names = ['A','B','C','D','E','F','G','H']
-    #         #---------Assigning the columns Names--------------
-    #         logger.debug("Assigning Columns Names.")
-    #         databaseFrame.columns = columns_names[:db_col_size]
-    #         userInputFrame.columns = columns_names[:us_col_size]
-    #
-    #
-    #         if us_col_size == 2:#------------------------------------------------------------------------------
-    #             logger.info("Executing Case 2: user file with 2 columns")
-    #             #droping the column from databaseFrame
-    #             print('Input data has 2 columns')
-    #
-    #             logger.debug("Copying the Columns")
-    #             droped_column_copy_C = pd.Series(databaseFrame['C'])
-    #             droped_column_copy_D = pd.Series(databaseFrame['D'])
-    #             droped_column_copy_E = pd.Series(databaseFrame['E'])
-    #
-    #             logger.debug("Dropping the Unused Columns")
-    #             databaseFrame = databaseFrame.drop(['C','D','E'], axis=1)
-    #
-    #             logger.debug("Combining the user input columns in format - - - -.")
-    #             str_list_userinpt = pd.Series(userInputFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
-    #             logger.debug("Combining the database columns.")
-    #             str_list_database = pd.Series(databaseFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
-    #
-    #             #Now rejoining the dropped column and combined column list.
-    #             logger.debug("Rejoining the Dropped Columns.")
-    #             databaseFrame['C'] = droped_column_copy_C
-    #             databaseFrame['D'] = droped_column_copy_D
-    #             databaseFrame['E'] = droped_column_copy_E
-    #
-    #             #joining the str_list to the dataframes.
-    #             logger.debug("Joining the str_columns to User DataFrame")
-    #             userInputFrame['str_list'] = str_list_userinpt
-    #             logger.debug("Joining the str_columns to DB DataFrame")
-    #             databaseFrame['str_list'] = str_list_database
-    #
-    #             print('User Input: ')
-    #             print(str_list_userinpt)
-    #             print('Database: ')
-    #             print(str_list_database)
-    #
-    #             logger.debug("Counting the Similar Columns.")
-    #             dictionary = {}
-    #             rep_list = []
-    #             for item in str_list_database:
-    #                num = -1
-    #                if item not in dictionary:
-    #                   dictionary[item] = num =userInputFrame['str_list'].where(userInputFrame['str_list'] == item).count()
-    #                else:
-    #                   num  = dictionary[item]
-    #                if num == 0:
-    #                   num = num + 1
-    #                s = str(num) + ' times'
-    #                rep_list.append(s)
-    #
-    #             logger.debug("Counting Completes Now getting the series of repeted list.")
-    #             rep_list = pd.Series(rep_list)
-    #
-    #             logger.debug("Dropping the str_list columnn form user Frame")
-    #             userInputFrame = userInputFrame.drop('str_list', axis=1)
-    #
-    #             logger.debug("Adding the count colunn to the Database Frame")
-    #             databaseFrame['count'] = rep_list
-    #
-    #             #Dropping the all database Columns list...
-    #             logger.debug("Dropping all the columns to of the Database Frame except str_list and count")
-    #             databaseFrame = databaseFrame.drop(columns_names[:db_col_size],axis = 1)
-    #
-    #
-    #             #Saving back to excel file
-    #             destfp = destfp +'/output.xlsx'
-    #
-    #             logger.debug("Preparing the Writer")
-    #             # writer = pd.ExcelWriter(destfp)
-    #             # databaseFrame.to_excel(writer, 'Sheet1', header=False, index=False)
-    #             # writer.save()
-    #
-    #             logger.debug("Preparing the Writer For Saving File")
-    #
-    #             output_file_full_path = self.destination_file_path
-    #             # df_to_excel(databaseFrame,output_file_full_path)
-    #             df_to_scv(databaseFrame,output_file_full_path)
-    #
-    #
-    #             self.user_input_file_label.setText(self.user_file_path)
-    #             self.db_file_label.setText(self.db_file_path)
-    #
-    #             self.execute_btn.setEnabled(True)
-    #
-    #
-    #
-    #
-    # #--------------------------------------------------------------------------------------------------
-    #         elif us_col_size == 3:#------------------------------------------------------------------------------
-    #             logger.info("Executing Case 3: user file with 3 columns")
-    #
-    #             print('Input data has 3 columns')
-    #                 #droping the column from databaseFrame
-    #             logger.debug("Copying the Columns")
-    #             droped_column_copy_D = pd.Series(databaseFrame['D'])
-    #             droped_column_copy_E = pd.Series(databaseFrame['E'])
-    #
-    #             logger.debug("Dropping the Unused Columns")
-    #             databaseFrame = databaseFrame.drop(['D','E'], axis=1)
-    #
-    #             logger.debug("Combining the user input columns in format - - - -.")
-    #             str_list_userinpt = pd.Series(userInputFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
-    #             str_list_database = pd.Series(databaseFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
-    #
-    #             #Now rejoining the dropped column and combined column list.
-    #             databaseFrame['D'] = droped_column_copy_D
-    #             databaseFrame['E'] = droped_column_copy_E
-    #
-    #             #joining the str_list to the dataframes.
-    #             userInputFrame['str_list'] = str_list_userinpt
-    #             databaseFrame['str_list'] = str_list_database
-    #
-    #             print('User Input: ')
-    #             print(str_list_userinpt)
-    #             print('Database: ')
-    #             print(str_list_database)
-    #
-    #             logger.debug("Counting the Similar Columns.")
-    #             dictionary = {}
-    #             rep_list = []
-    #             for item in str_list_database:
-    #                num = -1
-    #                if item not in dictionary:
-    #                   dictionary[item] = num =userInputFrame['str_list'].where(userInputFrame['str_list'] == item).count()
-    #                else:
-    #                   num  = dictionary[item]
-    #                if num == 0:
-    #                   num = num + 1
-    #                s = str(num) + ' times'
-    #                rep_list.append(s)
-    #
-    #             rep_list = pd.Series(rep_list)
-    #
-    #             userInputFrame = userInputFrame.drop('str_list', axis=1)
-    #
-    #             logger.debug("Adding the count colunn to the Database Frame")
-    #             databaseFrame['count'] = rep_list
-    #
-    #             #Dropping the all database Columns list...
-    #             logger.debug("Dropping all the columns to of the Database Frame except str_list and count")
-    #             databaseFrame = databaseFrame.drop(columns_names[:db_col_size],axis = 1)
-    #
-    #
-    #             # #Saving back to excel file
-    #             # destfp = destfp +'/output.xlsx'
-    #             # writer = pd.ExcelWriter(destfp)
-    #             # databaseFrame.to_excel(writer, 'Sheet1', header=False, index=False)
-    #             # writer.save()
-    #
-    #             logger.debug("Preparing the Writer For Saving File")
-    #             output_file_full_path = self.destination_file_path
-    #             # df_to_excel(databaseFrame,output_file_full_path)
-    #             df_to_scv(databaseFrame,output_file_full_path)
-    #
-    #             # mb = QtWidgets.QMessageBox()
-    #             # mb.setIcon(mb.Information)
-    #             # mb.setWindowTitle("MESSAGE WINDOW")
-    #             # message = "File Saved To: " + destfp
-    #             # mb.setInformativeText(message)
-    #             # mb.setStandardButtons(mb.Ok)
-    #             # mb.exec()
-    #
-    # #--------------------------------------------------------------------------------------------------
-    #         elif us_col_size == 4:#------------------------------------------------------------------------------
-    #             logger.info("Executing Case 4: user file with 4 columns")
-    #             print('Input data has 4 columns')
-    #                 #droping the column from databaseFrame
-    #             logger.debug("Copying the Columns")
-    #             logger.debug("Dropping the Unused Columns")
-    #             droped_column_copy_E = pd.Series(databaseFrame['E'])
-    #
-    #             databaseFrame = databaseFrame.drop('E', axis=1)
-    #
-    #             logger.debug("Combining the user input columns in format - - - -.")
-    #             str_list_userinpt = pd.Series(userInputFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
-    #             str_list_database = pd.Series(databaseFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
-    #
-    #             #Now rejoining the dropped column and combined column list.
-    #             databaseFrame['E'] = droped_column_copy_E
-    #
-    #             #joining the str_list to the dataframes.
-    #             userInputFrame['str_list'] = str_list_userinpt
-    #             databaseFrame['str_list'] = str_list_database
-    #
-    #             print('User Input: ')
-    #             print(str_list_userinpt)
-    #             print('Database: ')
-    #             print(str_list_database)
-    #
-    #             logger.debug("Counting the Similar Columns.")
-    #             dictionary = {}
-    #             rep_list = []
-    #             for item in str_list_database:
-    #                num = -1
-    #                if item not in dictionary:
-    #                   dictionary[item] = num =userInputFrame['str_list'].where(userInputFrame['str_list'] == item).count()
-    #                else:
-    #                   num  = dictionary[item]
-    #                if num == 0:
-    #                   num = num + 1
-    #                s = str(num) + ' times'
-    #                rep_list.append(s)
-    #
-    #             rep_list = pd.Series(rep_list)
-    #
-    #             userInputFrame = userInputFrame.drop('str_list', axis=1)
-    #
-    #             logger.debug("Adding the count colunn to the Database Frame")
-    #             databaseFrame['count'] = rep_list
-    #
-    #             #Dropping the all database Columns list...
-    #             logger.debug("Dropping all the columns to of the Database Frame except str_list and count")
-    #             databaseFrame = databaseFrame.drop(columns_names[:db_col_size],axis = 1)
-    #
-    #
-    #             # #Saving back to excel file
-    #             # destfp = destfp +'/output.xlsx'
-    #             # writer = pd.ExcelWriter(destfp)
-    #             # databaseFrame.to_excel(writer, 'Sheet1', header=False, index=False)
-    #             # writer.save()
-    #
-    #             logger.debug("Preparing the Writer For Saving File")
-    #             output_file_full_path = self.destination_file_path
-    #             # df_to_excel(databaseFrame,output_file_full_path)
-    #             df_to_scv(databaseFrame,output_file_full_path)
-    #
-    #
-    #
-    #
-    # #--------------------------------------------------------------------------------------------------
-    #         elif us_col_size == 5:#------------------------------------------------------------------------------
-    #             logger.info("Executing Case 5: user file with 5 columns")
-    #             print('Input data has 5 columns')
-    #
-    #             logger.debug("Combining the user input columns in format - - - -.")
-    #             str_list_userinpt = pd.Series(userInputFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
-    #             str_list_database = pd.Series(databaseFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
-    #
-    #             #joining the str_list to the dataframes.
-    #             userInputFrame['str_list'] = str_list_userinpt
-    #             databaseFrame['str_list'] = str_list_database
-    #
-    #             print('User Input: ')
-    #             print(str_list_userinpt)
-    #             print('Database: ')
-    #             print(str_list_database)
-    #
-    #
-    #             logger.debug("Counting the Similar Columns.")
-    #             dictionary = {}
-    #             rep_list = []
-    #             for item in str_list_database:
-    #                num = -1
-    #                if item not in dictionary:
-    #                   dictionary[item] = num =userInputFrame['str_list'].where(userInputFrame['str_list'] == item).count()
-    #                else:
-    #                   num  = dictionary[item]
-    #                if num == 0:
-    #                   num = num + 1
-    #                s = str(num) + ' times'
-    #                rep_list.append(s)
-    #
-    #             rep_list = pd.Series(rep_list)
-    #
-    #             userInputFrame = userInputFrame.drop('str_list', axis=1)
-    #
-    #             logger.debug("Adding the count colunn to the Database Frame")
-    #             databaseFrame['count'] = rep_list
-    #
-    #             #Dropping the all database Columns list...
-    #             logger.debug("Dropping all the columns to of the Database Frame except str_list and count")
-    #             databaseFrame = databaseFrame.drop(columns_names[:db_col_size],axis = 1)
-    #
-    #             # #Saving back to excel file
-    #             # destfp = destfp +'/output.xlsx'
-    #             # writer = pd.ExcelWriter(destfp)
-    #             # databaseFrame.to_excel(writer, 'Sheet1', header=False, index=False)
-    #             # writer.save()
-    #
-    #             logger.debug("Preparing the Writer For Saving File")
-    #             output_file_full_path = self.destination_file_path
-    #             # df_to_excel(databaseFrame,output_file_full_path)
-    #             df_to_scv(databaseFrame,output_file_full_path)
-    #
-    # #--------------------------------------------------------------------------------------------------
-    #         elif us_col_size == 6:#-----------------------------------------------------------------------------------
-    #             print('Input data has 6 columns')
-    #             logger.info("Executing Case 6: user file with 6 columns")
-    #             #drop the last column of the dataframe.
-    #             logger.debug("Copying the Columns")
-    #             logger.debug("Dropping the Unused Columns")
-    #             droped_column_copy = pd.Series(userInputFrame[userInputFrame.columns[-1]])
-    #             userInputFrame = userInputFrame.drop(userInputFrame.columns[-1], axis=1)
-    #
-    #
-    #             logger.debug("Combining the user input columns in format - - - -.")
-    #             str_list_userinpt = pd.Series(userInputFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
-    #             str_list_database = pd.Series(databaseFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
-    #
-    #             #Now rejoining the dropped column and combined column list.
-    #             userInputFrame['F'] = droped_column_copy
-    #             userInputFrame['str_list'] = str_list_userinpt
-    #             databaseFrame['str_list'] = str_list_database
-    #
-    #             print('User Input: ')
-    #             print(str_list_userinpt)
-    #             print('Database: ')
-    #             print(str_list_database)
-    #
-    #             logger.debug("Counting the Similar Columns.")
-    #             dictionary = {}
-    #             rep_list = []
-    #             for item in str_list_database:
-    #                num = -1
-    #                if item not in dictionary:
-    #                   dictionary[item] = num =userInputFrame['str_list'].where(userInputFrame['str_list'] == item).count()
-    #                else:
-    #                   num  = dictionary[item]
-    #                if num == 0:
-    #                   num = num + 1
-    #                s = str(num) + ' times'
-    #                rep_list.append(s)
-    #
-    #             rep_list = pd.Series(rep_list)
-    #
-    #             userInputFrame = userInputFrame.drop('str_list', axis=1)
-    #
-    #             logger.debug("Adding the count colunn to the Database Frame")
-    #             databaseFrame['count'] = rep_list
-    #
-    #             #Dropping the all database Columns list...
-    #             logger.debug("Dropping all the columns to of the Database Frame except str_list and count")
-    #             databaseFrame = databaseFrame.drop(columns_names[:db_col_size],axis = 1)
-    #
-    #
-    #             #Saving back to excel file
-    #             # destfp = destfp +'/output.xlsx'
-    #             # writer = pd.ExcelWriter(destfp)
-    #             # databaseFrame.to_excel(writer, 'Sheet1', header=False, index=False)
-    #             # writer.save()
-    #
-    #             logger.debug("Preparing the Writer For Saving File")
-    #             output_file_full_path = self.destination_file_path
-    #             # df_to_excel(databaseFrame,output_file_full_path)
-    #             df_to_scv(databaseFrame,output_file_full_path)
-    #
-    #
-    #             # mb = QtWidgets.QMessageBox()
-    #             # mb.setIcon(mb.Information)
-    #             # mb.setWindowTitle("MESSAGE WINDOW")
-    #             # message = "File Saved To: " + destfp
-    #             # mb.setInformativeText(message)
-    #             # mb.setStandardButtons(mb.Ok)
-    #             # mb.exec()
-    #
-    #     except Exception as e:
-    #         logger.error(traceback.format_exc())
-    #         logger.error(e.__traceback__)
-    #     finally:
-    #         #----------------Animation-------------------
-    #         self.movie.stop()
-    #         self.load_label.setText("-FINISHED-")
-    #         self.execute_btn.setEnabled(True)
-    #         #----------------Animation-------------------
+    def script(self,ufp,usn,dbfp,dbsn,destfp):
+
+        print("Script Runs")
+        logger.info("Script Running.")
+
+        def df_to_excel(df, path, sheet_name='Sheet 1'):
+            path = path +'/output.xlsx'
+
+            logger.debug("Excel Export Started.")
+            data = [df.columns.tolist(), ] + df.values.tolist()
+            wb = Workbook()
+            wb.new_sheet(sheet_name, data=data)
+            wb.save(path)
+            logger.info("Save Completes!")
+
+        def df_to_scv(df, path):
+            path = path +'/output.csv'
+            logger.debug("CSV Export Started.")
+            df.to_csv(path, chunksize=1000,header=False,index=False)
+            logger.info("Save Completes!")
+
+
+        try:
+
+            u_inpt_file_path = ufp
+            u_file_sheet_no = usn - 1
+
+            database_file_path = dbfp
+            db_file_sheet_no = dbsn - 1
+
+            if u_file_sheet_no < 0:
+                u_file_sheet_no = 0
+            if db_file_sheet_no < 0:
+                db_file_sheet_no = 0
+
+
+
+            logger.debug("Reading Database File.")
+            databaseFrame = pd.read_excel(database_file_path, sheet_name=u_file_sheet_no,header=None)
+
+            logger.debug("Reading User Input File.")
+            userInputFrame = pd.read_excel(u_inpt_file_path, sheet_name=db_file_sheet_no,header=None)
+
+            #getting columns size...
+            logger.debug("Getting Columns sizes.")
+            db_col_size = databaseFrame.columns.size
+            us_col_size = userInputFrame.columns.size
+
+
+            columns_names = ['A','B','C','D','E','F','G','H']
+            #---------Assigning the columns Names--------------
+            logger.debug("Assigning Columns Names.")
+            databaseFrame.columns = columns_names[:db_col_size]
+            userInputFrame.columns = columns_names[:us_col_size]
+
+
+            if us_col_size == 2:#------------------------------------------------------------------------------
+                logger.info("Executing Case 2: user file with 2 columns")
+                #droping the column from databaseFrame
+                print('Input data has 2 columns')
+
+                logger.debug("Copying the Columns")
+                droped_column_copy_C = pd.Series(databaseFrame['C'])
+                droped_column_copy_D = pd.Series(databaseFrame['D'])
+                droped_column_copy_E = pd.Series(databaseFrame['E'])
+
+                logger.debug("Dropping the Unused Columns")
+                databaseFrame = databaseFrame.drop(['C','D','E'], axis=1)
+
+                logger.debug("Combining the user input columns in format - - - -.")
+                str_list_userinpt = pd.Series(userInputFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
+                logger.debug("Combining the database columns.")
+                str_list_database = pd.Series(databaseFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
+
+                #Now rejoining the dropped column and combined column list.
+                logger.debug("Rejoining the Dropped Columns.")
+                databaseFrame['C'] = droped_column_copy_C
+                databaseFrame['D'] = droped_column_copy_D
+                databaseFrame['E'] = droped_column_copy_E
+
+                #joining the str_list to the dataframes.
+                logger.debug("Joining the str_columns to User DataFrame")
+                userInputFrame['str_list'] = str_list_userinpt
+                logger.debug("Joining the str_columns to DB DataFrame")
+                databaseFrame['str_list'] = str_list_database
+
+                print('User Input: ')
+                print(str_list_userinpt)
+                print('Database: ')
+                print(str_list_database)
+
+                logger.debug("Counting the Similar Columns.")
+                dictionary = {}
+                rep_list = []
+                for item in str_list_database:
+                   num = -1
+                   if item not in dictionary:
+                      dictionary[item] = num =userInputFrame['str_list'].where(userInputFrame['str_list'] == item).count()
+                   else:
+                      num  = dictionary[item]
+                   if num == 0:
+                      num = num + 1
+                   s = str(num) + ' times'
+                   rep_list.append(s)
+
+                logger.debug("Counting Completes Now getting the series of repeted list.")
+                rep_list = pd.Series(rep_list)
+
+                logger.debug("Dropping the str_list columnn form user Frame")
+                userInputFrame = userInputFrame.drop('str_list', axis=1)
+
+                logger.debug("Adding the count colunn to the Database Frame")
+                databaseFrame['count'] = rep_list
+
+                #Dropping the all database Columns list...
+                logger.debug("Dropping all the columns to of the Database Frame except str_list and count")
+                databaseFrame = databaseFrame.drop(columns_names[:db_col_size],axis = 1)
+
+
+                #Saving back to excel file
+                destfp = destfp +'/output.xlsx'
+
+                logger.debug("Preparing the Writer")
+                # writer = pd.ExcelWriter(destfp)
+                # databaseFrame.to_excel(writer, 'Sheet1', header=False, index=False)
+                # writer.save()
+
+                logger.debug("Preparing the Writer For Saving File")
+
+                output_file_full_path = self.destination_file_path
+                # df_to_excel(databaseFrame,output_file_full_path)
+                df_to_scv(databaseFrame,output_file_full_path)
+
+
+                self.user_input_file_label.setText(self.user_file_path)
+                self.db_file_label.setText(self.db_file_path)
+
+                self.execute_btn.setEnabled(True)
+
+
+
+
+    #--------------------------------------------------------------------------------------------------
+            elif us_col_size == 3:#------------------------------------------------------------------------------
+                logger.info("Executing Case 3: user file with 3 columns")
+
+                print('Input data has 3 columns')
+                    #droping the column from databaseFrame
+                logger.debug("Copying the Columns")
+                droped_column_copy_D = pd.Series(databaseFrame['D'])
+                droped_column_copy_E = pd.Series(databaseFrame['E'])
+
+                logger.debug("Dropping the Unused Columns")
+                databaseFrame = databaseFrame.drop(['D','E'], axis=1)
+
+                logger.debug("Combining the user input columns in format - - - -.")
+                str_list_userinpt = pd.Series(userInputFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
+                str_list_database = pd.Series(databaseFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
+
+                #Now rejoining the dropped column and combined column list.
+                databaseFrame['D'] = droped_column_copy_D
+                databaseFrame['E'] = droped_column_copy_E
+
+                #joining the str_list to the dataframes.
+                userInputFrame['str_list'] = str_list_userinpt
+                databaseFrame['str_list'] = str_list_database
+
+                print('User Input: ')
+                print(str_list_userinpt)
+                print('Database: ')
+                print(str_list_database)
+
+                logger.debug("Counting the Similar Columns.")
+                dictionary = {}
+                rep_list = []
+                for item in str_list_database:
+                   num = -1
+                   if item not in dictionary:
+                      dictionary[item] = num =userInputFrame['str_list'].where(userInputFrame['str_list'] == item).count()
+                   else:
+                      num  = dictionary[item]
+                   if num == 0:
+                      num = num + 1
+                   s = str(num) + ' times'
+                   rep_list.append(s)
+
+                rep_list = pd.Series(rep_list)
+
+                userInputFrame = userInputFrame.drop('str_list', axis=1)
+
+                logger.debug("Adding the count colunn to the Database Frame")
+                databaseFrame['count'] = rep_list
+
+                #Dropping the all database Columns list...
+                logger.debug("Dropping all the columns to of the Database Frame except str_list and count")
+                databaseFrame = databaseFrame.drop(columns_names[:db_col_size],axis = 1)
+
+
+                # #Saving back to excel file
+                # destfp = destfp +'/output.xlsx'
+                # writer = pd.ExcelWriter(destfp)
+                # databaseFrame.to_excel(writer, 'Sheet1', header=False, index=False)
+                # writer.save()
+
+                logger.debug("Preparing the Writer For Saving File")
+                output_file_full_path = self.destination_file_path
+                # df_to_excel(databaseFrame,output_file_full_path)
+                df_to_scv(databaseFrame,output_file_full_path)
+
+                # mb = QtWidgets.QMessageBox()
+                # mb.setIcon(mb.Information)
+                # mb.setWindowTitle("MESSAGE WINDOW")
+                # message = "File Saved To: " + destfp
+                # mb.setInformativeText(message)
+                # mb.setStandardButtons(mb.Ok)
+                # mb.exec()
+
+    #--------------------------------------------------------------------------------------------------
+            elif us_col_size == 4:#------------------------------------------------------------------------------
+                logger.info("Executing Case 4: user file with 4 columns")
+                print('Input data has 4 columns')
+                    #droping the column from databaseFrame
+                logger.debug("Copying the Columns")
+                logger.debug("Dropping the Unused Columns")
+                droped_column_copy_E = pd.Series(databaseFrame['E'])
+
+                databaseFrame = databaseFrame.drop('E', axis=1)
+
+                logger.debug("Combining the user input columns in format - - - -.")
+                str_list_userinpt = pd.Series(userInputFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
+                str_list_database = pd.Series(databaseFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
+
+                #Now rejoining the dropped column and combined column list.
+                databaseFrame['E'] = droped_column_copy_E
+
+                #joining the str_list to the dataframes.
+                userInputFrame['str_list'] = str_list_userinpt
+                databaseFrame['str_list'] = str_list_database
+
+                print('User Input: ')
+                print(str_list_userinpt)
+                print('Database: ')
+                print(str_list_database)
+
+                logger.debug("Counting the Similar Columns.")
+                dictionary = {}
+                rep_list = []
+                for item in str_list_database:
+                   num = -1
+                   if item not in dictionary:
+                      dictionary[item] = num =userInputFrame['str_list'].where(userInputFrame['str_list'] == item).count()
+                   else:
+                      num  = dictionary[item]
+                   if num == 0:
+                      num = num + 1
+                   s = str(num) + ' times'
+                   rep_list.append(s)
+
+                rep_list = pd.Series(rep_list)
+
+                userInputFrame = userInputFrame.drop('str_list', axis=1)
+
+                logger.debug("Adding the count colunn to the Database Frame")
+                databaseFrame['count'] = rep_list
+
+                #Dropping the all database Columns list...
+                logger.debug("Dropping all the columns to of the Database Frame except str_list and count")
+                databaseFrame = databaseFrame.drop(columns_names[:db_col_size],axis = 1)
+
+
+                # #Saving back to excel file
+                # destfp = destfp +'/output.xlsx'
+                # writer = pd.ExcelWriter(destfp)
+                # databaseFrame.to_excel(writer, 'Sheet1', header=False, index=False)
+                # writer.save()
+
+                logger.debug("Preparing the Writer For Saving File")
+                output_file_full_path = self.destination_file_path
+                # df_to_excel(databaseFrame,output_file_full_path)
+                df_to_scv(databaseFrame,output_file_full_path)
+
+
+
+
+    #--------------------------------------------------------------------------------------------------
+            elif us_col_size == 5:#------------------------------------------------------------------------------
+                logger.info("Executing Case 5: user file with 5 columns")
+                print('Input data has 5 columns')
+
+                logger.debug("Combining the user input columns in format - - - -.")
+                str_list_userinpt = pd.Series(userInputFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
+                str_list_database = pd.Series(databaseFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
+
+                #joining the str_list to the dataframes.
+                userInputFrame['str_list'] = str_list_userinpt
+                databaseFrame['str_list'] = str_list_database
+
+                print('User Input: ')
+                print(str_list_userinpt)
+                print('Database: ')
+                print(str_list_database)
+
+
+                logger.debug("Counting the Similar Columns.")
+                dictionary = {}
+                rep_list = []
+                for item in str_list_database:
+                   num = -1
+                   if item not in dictionary:
+                      dictionary[item] = num =userInputFrame['str_list'].where(userInputFrame['str_list'] == item).count()
+                   else:
+                      num  = dictionary[item]
+                   if num == 0:
+                      num = num + 1
+                   s = str(num) + ' times'
+                   rep_list.append(s)
+
+                rep_list = pd.Series(rep_list)
+
+                userInputFrame = userInputFrame.drop('str_list', axis=1)
+
+                logger.debug("Adding the count colunn to the Database Frame")
+                databaseFrame['count'] = rep_list
+
+                #Dropping the all database Columns list...
+                logger.debug("Dropping all the columns to of the Database Frame except str_list and count")
+                databaseFrame = databaseFrame.drop(columns_names[:db_col_size],axis = 1)
+
+                # #Saving back to excel file
+                # destfp = destfp +'/output.xlsx'
+                # writer = pd.ExcelWriter(destfp)
+                # databaseFrame.to_excel(writer, 'Sheet1', header=False, index=False)
+                # writer.save()
+
+                logger.debug("Preparing the Writer For Saving File")
+                output_file_full_path = self.destination_file_path
+                # df_to_excel(databaseFrame,output_file_full_path)
+                df_to_scv(databaseFrame,output_file_full_path)
+
+    #--------------------------------------------------------------------------------------------------
+            elif us_col_size == 6:#-----------------------------------------------------------------------------------
+                print('Input data has 6 columns')
+                logger.info("Executing Case 6: user file with 6 columns")
+                #drop the last column of the dataframe.
+                logger.debug("Copying the Columns")
+                logger.debug("Dropping the Unused Columns")
+                droped_column_copy = pd.Series(userInputFrame[userInputFrame.columns[-1]])
+                userInputFrame = userInputFrame.drop(userInputFrame.columns[-1], axis=1)
+
+
+                logger.debug("Combining the user input columns in format - - - -.")
+                str_list_userinpt = pd.Series(userInputFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
+                str_list_database = pd.Series(databaseFrame.apply(lambda row: '-'.join([str(int(val)) for val in row]), axis=1))
+
+                #Now rejoining the dropped column and combined column list.
+                userInputFrame['F'] = droped_column_copy
+                userInputFrame['str_list'] = str_list_userinpt
+                databaseFrame['str_list'] = str_list_database
+
+                print('User Input: ')
+                print(str_list_userinpt)
+                print('Database: ')
+                print(str_list_database)
+
+                logger.debug("Counting the Similar Columns.")
+                dictionary = {}
+                rep_list = []
+                for item in str_list_database:
+                   num = -1
+                   if item not in dictionary:
+                      dictionary[item] = num =userInputFrame['str_list'].where(userInputFrame['str_list'] == item).count()
+                   else:
+                      num  = dictionary[item]
+                   if num == 0:
+                      num = num + 1
+                   s = str(num) + ' times'
+                   rep_list.append(s)
+
+                rep_list = pd.Series(rep_list)
+
+                userInputFrame = userInputFrame.drop('str_list', axis=1)
+
+                logger.debug("Adding the count colunn to the Database Frame")
+                databaseFrame['count'] = rep_list
+
+                #Dropping the all database Columns list...
+                logger.debug("Dropping all the columns to of the Database Frame except str_list and count")
+                databaseFrame = databaseFrame.drop(columns_names[:db_col_size],axis = 1)
+
+
+                #Saving back to excel file
+                # destfp = destfp +'/output.xlsx'
+                # writer = pd.ExcelWriter(destfp)
+                # databaseFrame.to_excel(writer, 'Sheet1', header=False, index=False)
+                # writer.save()
+
+                logger.debug("Preparing the Writer For Saving File")
+                output_file_full_path = self.destination_file_path
+                # df_to_excel(databaseFrame,output_file_full_path)
+                df_to_scv(databaseFrame,output_file_full_path)
+
+
+                # mb = QtWidgets.QMessageBox()
+                # mb.setIcon(mb.Information)
+                # mb.setWindowTitle("MESSAGE WINDOW")
+                # message = "File Saved To: " + destfp
+                # mb.setInformativeText(message)
+                # mb.setStandardButtons(mb.Ok)
+                # mb.exec()
+
+        except Exception as e:
+            logger.error(traceback.format_exc())
+            logger.error(e.__traceback__)
+        finally:
+            #----------------Animation-------------------
+            self.movie.stop()
+            self.load_label.setText("-FINISHED-")
+            self.execute_btn.setEnabled(True)
+            #----------------Animation-------------------
 
 
 
