@@ -1,4 +1,4 @@
-#  Crawler Using Response-html library
+#  Crawler Using Requests-html library
 ## This Crawler is specifialyy designed for the Daraz.pk [e-commerce site].
 
 ## Prerequesits
