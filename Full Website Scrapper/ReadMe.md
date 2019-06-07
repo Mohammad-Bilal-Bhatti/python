@@ -46,30 +46,43 @@ The script work using five data pipelines.
 * specification pipeline
 * table pipeline
 
-## Brand pipeline:
-    This pipeline is responsible for selection of brand from the brand select list and also responsible for downloading the required page.
+---
 
-    This pipeline will next pass the data to the series pipeline for further processing.
+## Brand pipeline:
+This pipeline is responsible for selection of brand from the brand select list and also responsible for downloading the required page.
+
+This pipeline will next pass the data to the series pipeline for further processing.
+
+---
 
 ## Series Pipeline:
-    This pipeline is responsible for downloading the series selection page and also responsible for selecting series with respect to each brand name.
+This pipeline is responsible for downloading the series selection page and also responsible for selecting series with respect to each brand name.
 
-    One brand name can have multiple series names so the script will operate on each level of the series.
+One brand name can have multiple series names so the script will operate on each level of the series.
 
-    Further this pipeline will pass the data to its next Build Pipeline.
+Further this pipeline will pass the data to its next Build Pipeline.
+
+---
 
 ## Build Pipeline:
-    This pipeline will download the next html and responsible for the selection of the Generation related to each series.
 
-    Each brand-series can have different gereration. This pipeline will loop through each gerneation and pass the data to the next pipeline.
+This pipeline will download the next html and responsible for the selection of the Generation related to each series.
+
+Each brand-series can have different gereration. This pipeline will loop through each gerneation and pass the data to the next pipeline.
+
+---
 
 ## Specification Pipeline:
-    This pipeline will download the specification selection page and responsible for selection of specification from the specification list. 
 
-    This will loop through each specification configuration and pass the data to the next pipeline for final processing.
+This pipeline will download the specification selection page and responsible for selection of specification from the specification list. 
+
+This will loop through each specification configuration and pass the data to the next pipeline for final processing.
+
+---
 
 ## Table Pipeline:
-    The final pipeline is the table pipeline. This pipeline is responsible for downloading the web page and scrap the real data present in the table. This pipeline will also add the scraped data in the pre defined format related to the particular table data.
+
+The final pipeline is the table pipeline. This pipeline is responsible for downloading the web page and scrap the real data present in the table. This pipeline will also add the scraped data in the pre defined format related to the particular table data.
 
 
 
