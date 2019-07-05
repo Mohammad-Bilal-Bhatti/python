@@ -12,7 +12,7 @@ pip install csv
 # How to Use this script?
 This script will be used by passing single command line argument. Following line will show how to use the script.
 ## Syntax:
-### python script_name.py "Search_Query"
+> python script_name.py "Search_Query"
 ## Example:
 > python "Daraz Crawler Using HTMLResponse.py" "samsung j5"
 
