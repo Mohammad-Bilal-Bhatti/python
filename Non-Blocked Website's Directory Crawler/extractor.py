@@ -18,12 +18,12 @@ print('Collecting Data From : ',site_url)
 # Getting Response From the Site...
 response = session.get(site_url)
 
-html = response.html 							# Taking HTML response of that request
-selector = 'table'								# Basic selector element is table
+html = response.html 					# Taking HTML response of that request
+selector = 'table'					# Basic selector element is table
 table = html.find(selector,first=True)			# Find the first table in the HTML
 titleRow = table.find('tr',first=True)			# Get the first Row for the Table, TitleRow, every time
 
-header = []										# Making the header an empty list
+header = []						# Making the header an empty list
 
 # For each table-header element in titleRow, find the text in it, and append to the list...
 for tableHead in titleRow.find('th'):	
@@ -57,7 +57,7 @@ def downloadFile(link, file_name, dir_name):
 
 		parms:
 			~ link: 			http or https address
-			~ file_name:		string
+			~ file_name:			string
 			~ dir_name:			string
 
 		returns:	NONE
@@ -69,6 +69,7 @@ def downloadFile(link, file_name, dir_name):
     print(f'Downloading:\nlink = {link} \nfile_name =  {file_name} \ndir_name = {dir_name}')
     
     import os			# Imporing Os module for acdessing file system.
+	
     # Check the directory with specified name exists or not, 
     # if it doesnot exists make the directory with the that NAME
     if os.path.exists(dir_name) == False:
@@ -79,9 +80,9 @@ def downloadFile(link, file_name, dir_name):
         relative_path = dir_name + '/' + file_name
         if res.status_code == 200:					# If the status Code is [200] means [OK]
             content = res.content					# get is content
-            file = open(relative_path,'wb')			# open a file in write mode
+            file = open(relative_path,'wb')				# open a file in write mode
             file.write(content)						# write its content
-            file.close()							# Close the file
+            file.close()						# Close the file
         else:
         	print('File could not being Downloaded Reason: Response CODE = {}'.format(res.status_code))
     except Exception as e:
@@ -103,21 +104,21 @@ for tr in table.find('tr'):
     if skipFirst == True:
         skipFirst = False;
         continue
-    td = tr.find('td')												# get the Table Data Elements list
-    if( len( td ) > 0 ):		# if it founds it then:
-        anchor = td[download_link_indx].find('a',first=True)		# Get the first anchor TAG in TD
-        d_link = anchor.attrs['href']        						# Access the href property attribute.
+    td = tr.find('td')						# get the Table Data Elements list
+    if( len( td ) > 0 ):					# if it founds it then:
+        anchor = td[download_link_indx].find('a',first=True)	# Get the first anchor TAG in TD
+        d_link = anchor.attrs['href']        			# Access the href property attribute.
         full_link = site_url + '/' + d_link
         #print(full_link)
-        td = convertToTextEqui(td)									# Convert the TD ELEMENT LIST TO TEXT EQUIVALENT LIST
+        td = convertToTextEqui(td)				# Convert the TD ELEMENT LIST TO TEXT EQUIVALENT LIST
         # print(d_link)
-        name = td[download_link_indx]								# Extract the name of the file
-        name = name.lower()											# Lower case the name
-        if(name != 'parent directory'):								# name CHECK just for proper Download
-            downloadFile(full_link, d_link, save_dir)				# Call the Download Function and It will Download the file
+        name = td[download_link_indx]				# Extract the name of the file
+        name = name.lower()					# Lower case the name
+        if(name != 'parent directory'):				# name CHECK just for proper Download
+            downloadFile(full_link, d_link, save_dir)		# Call the Download Function and It will Download the file
         # print(name)
         #print(td)
-        csv_writer.writerow(td)										# Write Date to the CSV File
+        csv_writer.writerow(td)					# Write Date to the CSV File
 
 file.close()	# Close the file when all done...
 
