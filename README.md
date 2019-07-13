@@ -1,13 +1,13 @@
 # Python CODE LAB
 
 ## Includes:
-* ### 
-
-Description
-
-
-2.
-3.
-4.
-5.
-
+* ### Daraz Crawler
+  * Description: ...
+* ### Full Website Scrapper
+  * Description: ...
+* ### Non-Blocked Website Directory Crawler
+  * Description: ...
+* ### Object Serilization in python
+  * Description: ...
+* ### File Organization | Auto File Organization using python
+  * Description: ...
