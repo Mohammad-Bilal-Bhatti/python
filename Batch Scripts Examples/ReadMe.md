@@ -10,10 +10,16 @@ The script will download all the batch files available at [www.robvanderwoude.co
 * Python 3.7 or above
 * __Requests-html__ library 
 
+## Download the Required Library
+Open the terminal or cmd and run the following command if you have already setup pip and python in the environmental variable.
+```cmd
+pip install requests-html
+```
 
 ## Executable Command
-> python downloader.py
-
+```cmd
+python downloader.py
+```
 ## How To Use?
 * First download the [downloader.py](https://github.com/Mohammad-Bilal-Bhatti/python/blob/master/Batch%20Scripts%20Examples/downloader.py) form here, to your computer example in __C://users/Your_PC_Name/desktop/new_folder__
 in case you have windows just like me :)
