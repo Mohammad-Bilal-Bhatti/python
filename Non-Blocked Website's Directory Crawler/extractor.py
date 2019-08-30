@@ -36,7 +36,7 @@ import csv
 
 name = site_url[site_url.rfind('/') + 1:]  # name of the file would be same as name of directory described above.
 file_name = name + '.csv'
-file = open(file_name, 'w')
+file = open(file_name, 'w',newline='')
 csv_writer = csv.writer(file)
 csv_writer.writerow(header)
 
@@ -89,6 +89,39 @@ def downloadFile(link, file_name, dir_name):
         print('Exception in Downloading')
         print(e)
 
+def downloadFileWithPBar(link, file_name, dir_name):
+    """
+        Purpose: To Download and Save the file in the specified directory, with the specified name, from the speicfied link.
+        parms:
+            ~ link: 			http or https address
+            ~ file_name:			string
+            ~ dir_name:			string
+    returns:	NONE
+    """
+    import os  # Imporing Os module for acdessing file system.
+    import requests
+    from tqdm import tqdm  
+    print('-' * 40)  # Make a line on console of easy reading...
+    # Write the link form where the file is being downloading and where it is being saved
+    print(f'Downloading:\nlink = {link} \nfile_name =  {file_name} \ndir_name = {dir_name}')
+
+    # Check the directory with specified name exists or not, 
+    # if it doesnot exists make the directory with the that NAME
+    if os.path.exists(dir_name) == False:
+        os.mkdir(dir_name)
+    try:    
+        response = requests.get(link,stream=True)  # Requesting the Stream Response
+        total_size = int(response.headers['Content-Length'])  # Getting the Size of the File
+        pbar = tqdm(total=total_size)  # Initilizing the Progress Bar with the file size
+        relative_path = dir_name + '/' + file_name
+        with open(relative_path, 'wb') as f:  
+            for chunk in response.iter_content(chunk_size=1024): # Download 1024 bytes at single time means 1KB
+                if chunk: # filter out keep-alive new chunks
+                    f.write(chunk)   
+                pbar.update(len(chunk))  # Update the Progress Bar
+        pbar.close() # Close the Progress bar.    
+    except Exception as e:
+        print('Exception Occured: ',e)
 
 download_link_indx = 1  # Download Link is generally present on the index
 
@@ -119,7 +152,7 @@ for tr in table.find('tr'):
         name = td[download_link_indx]  # Extract the name of the file
         name = name.lower()  # Lower case the name
         if (name != 'parent directory'):  # name CHECK just for proper Download
-            downloadFile(full_link, d_link, save_dir)  # Call the Download Function and It will Download the file
+            downloadFileWithPBar(full_link, d_link, save_dir)  # Call the Download Function and It will Download the file
         # print(name)
         # print(td)
         csv_writer.writerow(td)  # Write Date to the CSV File
