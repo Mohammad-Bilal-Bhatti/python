@@ -13,7 +13,7 @@ The script wil download all the videos in any youtube playlist. It up to you to 
 
 ## For window users:
 
->  Step #1 Download The __YTD.exe__ on your system
+>  Step #1 Download The __YTD.exe__ on your system. Click [here](https://drive.google.com/file/d/1W9gSrzdOGIFzygbI3h2LeJId74vtZsRR/view?usp=sharing) to download file
 
 >  Step #2 Make A __New Folder__ Where You Want to Downlad Playlist
 
